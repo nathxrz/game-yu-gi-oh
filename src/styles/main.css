@@ -56,6 +56,7 @@ body {
   width: 35%;
   min-width: 30rem;
 
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
@@ -88,6 +89,63 @@ body {
   font-size: 1.6rem;
 }
 
-.container__right{
-  
+.container__right {
+  width: 65%;
+}
+
+.card-box__container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.48rem;
+}
+
+.card-versus__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding-top: 0.16rem;
+
+  height: 30rem;
+}
+
+.versus-top,
+.versus-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.versus-bottom {
+  margin-top: 1.6rem;
+}
+
+#next-duel {
+  display: none;
+}
+
+.card-box {
+  height: 14.4rem;
+
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.card-infield {
+  width: 12.8rem;
+  height: 17.92rem;
+  border-radius: 0.8rem;
+}
+
+.card {
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.2);
 }
