@@ -6,6 +6,16 @@ body {
   font-weight: 400;
 
   font-size: 1.6rem;
+
+  cursor: url("../assets/cursor/yugicursor.png"), default;
+}
+
+button,
+a,
+img:hover,
+button:hover,
+a:hover {
+  cursor: url("../assets/cursor/yamiyugicursorGLOW.png"), auto;
 }
 
 .frame {
@@ -120,10 +130,13 @@ body {
 
 .versus-bottom {
   margin-top: 1.6rem;
+  position: relative;
 }
 
 #next-duel {
   display: none;
+  position: absolute;
+  bottom: -10rem;
 }
 
 .card-box {
@@ -140,6 +153,8 @@ body {
   width: 12.8rem;
   height: 17.92rem;
   border-radius: 0.8rem;
+
+  border: 1px solid #fff;
 }
 
 .card {

@@ -11,13 +11,14 @@ const state = {
   },
   fieldCards: {
     player: document.getElementById("player-field-card"),
-    playerBox: document.querySelector(".card-box.framed#player-cards"),
     computer: document.getElementById("computer-field-card"),
-    computerBox: document.querySelector(".card-box.framed#computer-cards"),
   },
   playersSides: {
-  player: "player-cards",
-  computer: "computer-cards",
+    player: "player-cards",
+    playerBox: document.querySelector("#player-cards"),
+
+    computer: "computer-cards",
+    computerBox: document.querySelector("#computer-cards"),
   },
   button: document.getElementById("next-duel"),
 };
@@ -61,17 +62,45 @@ async function drawSelectCard(index) {
 }
 
 async function removeAllCardsImage() {
-  let cards = document.querySelector(".card-box.framed#computer-cards");
-  let imageElements = cards.querySelectorAll("img");
+  let { playerBox, computerBox } = state.playersSides;
+  let imageElements = playerBox.querySelectorAll("img");
   imageElements.forEach((img) => {
     img.remove();
   });
 
-  cards = document.querySelector(".card-box.framed#player-cards");
-  imageElements = cards.querySelectorAll("img");
+  imageElements = computerBox.querySelectorAll("img");
   imageElements.forEach((img) => {
     img.remove();
   });
+}
+
+async function checkDuelResults(idPlayer, idComputer) {
+  let duelResults = "draw";
+
+  let playerCard = cardData[idPlayer];
+
+  if (playerCard.WinOf.includes(idComputer)) {
+    duelResults = "win";
+    state.score.playerScore++;
+    playAudio(duelResults);
+  }
+
+  if (playerCard.LoseOf.includes(idComputer)) {
+    duelResults = "lose";
+    state.score.computerScore++;
+    playAudio(duelResults);
+  }
+
+  return duelResults;
+}
+
+async function drawButton(result) {
+  state.button.innerText = result.toUpperCase();
+  state.button.style.display = "block";
+}
+
+async function updateScore() {
+  state.score.scoreBox.innerText = `Win: ${state.score.playerScore} | Lose: ${state.score.computerScore}`;
 }
 
 async function setCardsFields(playerCardId) {
@@ -79,11 +108,9 @@ async function setCardsFields(playerCardId) {
 
   let computerCardId = await getRandomCardId();
 
-  state.fieldCards.player.style.display = "block";
-  state.fieldCards.computer.style.display = "block";
+  await ShowHiddenCardFieldsImages(true);
 
-  state.fieldCards.player.src = cardData[playerCardId].img;
-  state.fieldCards.computer.src = cardData[computerCardId].img;
+  await DrawCardsInfields(playerCardId, computerCardId);
 
   let duelResults = await checkDuelResults(playerCardId, computerCardId);
 
@@ -98,7 +125,7 @@ async function createCardImage(idCard, fieldSide) {
   cardImage.setAttribute("data-id", idCard);
   cardImage.classList.add("card");
 
-  if (fieldSide === playersSides.player) {
+  if (fieldSide === state.playersSides.player) {
     cardImage.addEventListener("mouseover", () => {
       drawSelectCard(idCard);
     });
@@ -120,9 +147,42 @@ async function drawCards(cardNumbers, fieldSide) {
   }
 }
 
+async function playAudio(status) {
+  const audio = new Audio(`./src/assets/audios/${status}.wav`);
+  audio.play();
+}
+
+async function resetDuel() {
+  state.cardSprites.avatar.src = "";
+  state.button.style.display = "none";
+
+  init();
+}
+
+// Extract to Method
+async function ShowHiddenCardFieldsImages(value) {
+  if (value) {
+    state.fieldCards.player.style.display = "block";
+    state.fieldCards.computer.style.display = "block";
+  } else {
+    state.fieldCards.player.style.display = "none";
+    state.fieldCards.computer.style.display = "none";
+  }
+}
+
+async function DrawCardsInfields(playerCardId, computerCardId) {
+  state.fieldCards.player.src = cardData[playerCardId].img;
+  state.fieldCards.computer.src = cardData[computerCardId].img;
+}
+
 function init() {
-  drawCards(5, playersSides.player);
-  drawCards(5, playersSides.computer);
+  ShowHiddenCardFieldsImages(false);
+
+  drawCards(5, state.playersSides.player);
+  drawCards(5, state.playersSides.computer);
+
+  const bgm = document.getElementById("bgm");
+  bgm.play();
 }
 
 init();
